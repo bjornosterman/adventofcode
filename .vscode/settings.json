@@ -1,4 +1,0 @@
-{
-    "python.pythonPath": "C:\\Users\\bjoost01\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
-    "python.formatting.autopep8Args": ["--max-line-length", "120", "--experimental"]
-}

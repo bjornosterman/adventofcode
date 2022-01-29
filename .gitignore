@@ -2,3 +2,5 @@
 **/bin
 **/.vs
 **/node_modules/**
+.fake
+.ionide
