@@ -35,7 +35,7 @@ public class Day12a : Day
     {
         var plant = grid[pos.X, pos.Y];
         grid[pos.X, pos.Y] = '.';
-        var ps = new List<Pos>() { pos.Rigth, pos.Down, pos.Left, pos.Up };
+        var ps = new List<Pos>() { pos.Right, pos.Down, pos.Left, pos.Up };
         var fences = 0;
         var plots = 1;
         foreach (var p in ps)

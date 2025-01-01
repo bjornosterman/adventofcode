@@ -44,10 +44,9 @@ public class Day12b : Day
     {
         var plant = grid[pos.X, pos.Y];
         grid[pos.X, pos.Y] = '.';
-        var ps = new List<Pos>() { pos.Rigth, pos.Down, pos.Left, pos.Up };
         var fences = 0;
         var plots = 1;
-        foreach (var p in ps)
+        foreach (var p in Pos.DeltaClockwize4Steps)
         {
             var next_plant = grid[p.X, p.Y];
             if (next_plant == '.') continue;

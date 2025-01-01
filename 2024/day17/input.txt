@@ -1,0 +1,55 @@
+Register A: 33024962
+Register B: 0
+Register C: 0
+
+Program: 2,4,1,3,7,5,1,5,0,3,4,2,5,5,3,0
+
+         0 1 2 3 4 5 6 7 8 9
+Program: 2,4 1,3 7,5 1,5 0,3 4,2 OUT JNZ
+          1   2   3   4   5   6
+
+  1. Lägg sista 3 bits från A till B
+2. Flippa 2 sista bits i B
+3. Flytta A --> C (right shift B)
+4. Flippa bit 1 och 3 i B
+  5. bitshift A 3 bitar
+6. flippa bitar B med C inför utskrift
+  7. utskrift
+  8. jump
+
+Bst 4 => B = 
+Bxl 3 => B ^= 3  B => 7
+Cdv B => A >> B => C
+Bst B => B = B MOD 8
+Adv 3 => A >>= 3
+Bxc   => B = B^C
+OUT B
+Restart
+
+
+B = 7
+Ta bort 7 bitar från A och lägg i C
+Cdv B => A >> B => C
+
+Spara bara sista 8 bitarna i B
+Bst B => B = B MOD 8
+
+Flytta A 3 bitar
+Adv 3 => A >>= 3
+
+Lägg C på B, med en Xor av Förra sista bitarna
+Bxc   => B = B^C
+OUT B
+Restart
+
+
+
+
+0    Adv, // int(A / 2^Combo) => A
+1    Bxl, // B XOR Literal => B 
+2    Bst, // Combo Mod 8 => B
+3    Jnz, // A == 0 ? Jump to Literal
+4    Bxc, // B XOR C => B
+5    Out, // Print Combo MOD 8
+6    Bdv, // int(A / 2^Combo) => B
+7    Cdv  // int(A / 2^Combo) => B

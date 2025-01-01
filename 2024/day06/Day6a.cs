@@ -5,31 +5,30 @@ public class Day06a : Day
         var sample = false;
         var input = sample ? samplePuzzleInput : puzzleInput;
 
-        var room = Util.ToCharGrid(input, 1, 'Q');
+        var room = Grid.Construct(input, 1, ' ');
 
-        // find person
-        var (x, y) = Util.FindChar(room, '^');
         var direction = '^';
 
-        while (room[x, y] != 'Q')
+        var pos = room.FindChars('^').First();
+
+        while (room[pos] != ' ')
         {
-            room[x, y] = 'X';
-            var (dx, dy) = Util.GetMoveDelta(direction);
-            var (nx, ny) = (x + dx, y + dy);
-            switch (room[nx, ny])
+            var new_pos = pos + Pos.GetDelta(direction);
+            switch (room[new_pos])
             {
                 case '#':
                     direction = Util.RotateClockwise(direction);
                     break;
                 default:
-                    x = nx; y = ny;
+                    room[pos] = 'X';
+                    pos = new_pos;
                     break;
             }
         }
 
-        var count = Util.CountChar(room, 'X');
+        var count = room.FindChars('X').Count();
+        room.Print();
         print(count);
-        Util.Print(room);
 
     }
 

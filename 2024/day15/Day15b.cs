@@ -82,7 +82,7 @@ public class Day15b : Day
                             {
                                 case '[':
                                     add(pos);
-                                    add(pos.Rigth);
+                                    add(pos.Right);
                                     break;
                                 case ']':
                                     add(pos);
