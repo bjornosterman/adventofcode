@@ -11,7 +11,6 @@ public class Day21a : Day
         var input = sample ? samplePuzzleInput : puzzleInput;
         int result = 0;
 
-
         result = 0;
 
         foreach (var line in input)

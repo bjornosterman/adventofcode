@@ -1,8 +1,3 @@
-using System.Net.NetworkInformation;
-using System.Reflection.Metadata.Ecma335;
-using System.Security;
-using System.Text.RegularExpressions;
-
 public class Day21b : Day
 {
 
@@ -10,75 +5,51 @@ public class Day21b : Day
     {
         checked
         {
-            var sample = true;
+            var sample = false;
             var input = sample ? samplePuzzleInput : puzzleInput;
             long result = 0;
 
-            this.DirKeyStepPaths = ToMoveDict3(dirkeys);
-            this.NumKeyStepPaths = ToMoveDict2(numkeys);
+            DirKeyStepPaths = ToMoveDict3(dirkeys);
+            NumKeyStepPaths = ToMoveDict2(numkeys);
 
-            var day21a = new Day21a();
+            // var day21a = new Day21a();
 
-            result = 0;
+            // result = 0;
 
-            var code = "029A";
+            // var code = "029A";
 
-            var text0a = day21a.NumKeyPresser(code).First();
-            print(text0a);
+            // var text0a = day21a.NumKeyPresser(code).First();
+            // print(text0a);
 
-            var text0b = NumKeyPresser2(code).First();
-            print(text0b);
+            // var text0b = NumKeyPresser2(code).First();
+            // print(text0b);
 
-            var tcs0a = text0a.ToTransitionCounts().Merge();
-            tcs0a.Print("text0a");
+            // var tcs0a = text0a.ToTransitionCounts().Merge();
+            // tcs0a.Print("text0a");
 
-            var tcs0b = text0b.ToTransitionCounts().Merge();
-            tcs0b.Print("text0b");
-            print("#---#---#---#---#---#---#---#---#---#---#---#---#");
+            // var tcs0b = text0b.ToTransitionCounts().Merge();
+            // tcs0b.Print("text0b");
+            // print("#---#---#---#---#---#---#---#---#---#---#---#---#");
 
-            var text1a = day21a.DirKeyPresser([text0a]).First();
-            print("text1a: " + text1a);
-            var tcs1a = text1a.ToTransitionCounts().Merge();
-            tcs1a.Print("text1a");
-            var tcs1b = DirKeyPresser(tcs0b).ToList();
-            tcs1b.Print("text1b");
+            // var text1a = day21a.DirKeyPresser([text0a]).First();
+            // print("text1a: " + text1a);
+            // var tcs1a = text1a.ToTransitionCounts().Merge();
+            // tcs1a.Print("text1a");
+            // var tcs1b = DirKeyPresser(tcs0b).ToList();
+            // tcs1b.Print("text1b");
 
-            print("#---#---#---#---#---#---#---#---#---#---#---#---#");
-
-
-            var text2a = day21a.DirKeyPresser([text1a]).First();
-            print("text2a: " + text1a);
-            var tcs2a = text2a.ToTransitionCounts().Merge();
-            tcs2a.Print("text2a");
-            var tcs2b = DirKeyPresser(tcs1b).ToList();
-            tcs2b.Print("text2b");
+            // print("#---#---#---#---#---#---#---#---#---#---#---#---#");
 
 
-            // var tcs1b = DirKeyPresser(tcs0b.Concat([new TransitionCount("A<", 1)])).ToList();
-            // var test = ToSteps(DirKeyStepPaths["A<"]).First();
-            // var test2 = tcs1b.First(x=>x.Transition == test);
-            // test2.Count--;
-            // var tcs1b = DirKeyPresser(tcs0b);
-
-            // var text1 = "<A^A>^^AvvvA";
-            // text1.ToTransitionCounts().Merge().Print("corr1");
-            // "v<<A>>^A<A>AvA<^AA>A<vAAA>^A".ToTransitionCounts().Merge().Print("corr2");
-
-            var number_of_dirkey_pressers = 2;
-
-            var line2 = "029A";
-            var alts2 = NumKeyPresser2(line2);
-            foreach (var alt in alts2)
-            {
-                var presser = NumKeyPresser(alt);
-                for (int i = 0; i < number_of_dirkey_pressers; i++)
-                {
-                    presser = DirKeyPresser(presser);
-                }
-                print(line2 + ": " + alt + "=" + presser.Sum(x => x.Count));
-            }
+            // var text2a = day21a.DirKeyPresser([text1a]).First();
+            // print("text2a: " + text1a);
+            // var tcs2a = text2a.ToTransitionCounts().Merge();
+            // tcs2a.Print("text2a");
+            // var tcs2b = DirKeyPresser(tcs1b).ToList();
+            // tcs2b.Print("text2b");
 
 
+            var number_of_dirkey_pressers = 25;
 
             foreach (var line in input)
             {
@@ -101,39 +72,12 @@ public class Day21b : Day
                 result += min * code_int;
             }
 
-            // foreach (var line in new[] { "<A^A^^>AvvvA" })
-            // {
-            //     var alts = NumKeyPresser2(line);
-            //     foreach (var alt in alts)
-            //     {
-            //         var presser = NumKeyPresser(alt);
-            //         print(line + ": " + alt + ": " + presser.Sum(x => x.Count));
-            //         for (int i = 0; i < number_of_dirkey_pressers; i++)
-            //         {
-            //             presser = DirKeyPresser(presser);
-            //         }
-            //         // print(line + ": " + alt + ": " + presser.Where(x=>x.Transition[0] != x.Transition[1]).Sum(x => x.Count));
-            //         print(line + ": " + alt + "=" + presser.Sum(x => x.Count));
-            //         // print(line + ": " + alt + ": " + presser.Where(x=>x.Transition != "AA").Sum(x => x.Count));
-            //     }
-
-            //     // var min = alts.Select(x => x.Length).Min();
-            //     // var code_int = int.Parse(line[..3]);
-            //     // print($"{min} * {code_int} = {min * code_int}");
-            //     // result += min * code_int;
-            // }
-
             print(result);
-
-            // Felaktig, för hög: 337696870703934
         }
     }
 
     private IEnumerable<string> ToSteps(string text)
     {
-        // if (text == "") return [""];
-        // if (text == "AA") return ["AA"];
-        // var text2 = "A" + text;
         var text2 = text;
         if (text2.StartsWith("A") == false) text2 = "A" + text2;
         if (text2.EndsWith("A") == false) text2 = text2 + "A";
@@ -145,14 +89,8 @@ public class Day21b : Day
 
     IEnumerable<TransitionCount> DirKeyPresser(IEnumerable<TransitionCount> inner)
     {
-        // Console.Write("inner: ");
-        // inner.Print();
-
         var outer = inner.SelectMany(tc => ToSteps(DirKeyStepPaths[tc.Transition]).Select(x => new TransitionCount(x, tc.Count)));
         var returns = outer.Merge();
-        // var returns = outer.GroupBy(tc => tc.Transition).Select(tcs => new TransitionCount(tcs.Key, tcs.Sum(x => x.Count)));
-        // Console.Write("outer: ");
-        // returns.Print();
         return returns;
     }
 
@@ -341,7 +279,7 @@ public class Day21b : Day
 ^vv
 ^>v>
 A<v<<
-Avv<
+Av<v
 A>v
 <v>
 <>>>
