@@ -59,21 +59,6 @@ public class Day21a : Day
         return combos.ToList();
     }
 
-    Dictionary<string, string> ToMoveDict(string text)
-    {
-        var dict = new Dictionary<string, string>();
-        foreach (var dir_key in text.Split(Environment.NewLine))
-        {
-            var key = dir_key.Substring(0, 2);
-            var value = dir_key.Substring(2);
-            dict[key] = value;
-            var rev_key = new string(key.Reverse().ToArray());
-            var rev_value = new string(value.Reverse().Select(Util.RotateClockwise).Select(Util.RotateClockwise).ToArray());
-            dict[rev_key] = rev_value;
-        }
-        return dict;
-    }
-
     Dictionary<string, string[]> ToMoveDict2(string text)
     {
         var dict = new Dictionary<string, string[]>();
@@ -90,7 +75,7 @@ public class Day21a : Day
         return dict;
     }
 
-    private string numkeys_simple =
+    public const string numkeys_simple =
     @"01^<
 02^
 03^>
@@ -216,7 +201,7 @@ A>v
 <>>>
 v>>";
 
-    private string dirkeys_all =
+    public const string dirkeys_all =
     @"^A>
 ^<v<
 ^vv

@@ -1,11 +1,8 @@
-using System.ComponentModel;
-using System.Numerics;
-using System.Reflection;
-
 public class Day20b : Day
 {
     public override void Run()
     {
+       
         var sample = false;
         var input = sample ? samplePuzzleInput : puzzleInput;
 

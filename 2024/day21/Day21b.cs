@@ -1,133 +1,61 @@
 public class Day21b : Day
 {
+    readonly Dictionary<string, string> DirKeyStepPaths = ConstructTransitionDictionary(dirkeys);
+    readonly Dictionary<string, string[]> NumKeyStepPaths = ConstructTransitionOptionsDictionary(numkeys);
 
     public override void Run()
     {
-        checked
+        var sample = false;
+        var input = sample ? samplePuzzleInput : puzzleInput;
+        long result = 0;
+
+        var number_of_dirkey_pressers = 25;
+
+        foreach (var line in input)
         {
-            var sample = false;
-            var input = sample ? samplePuzzleInput : puzzleInput;
-            long result = 0;
-
-            DirKeyStepPaths = ToMoveDict3(dirkeys);
-            NumKeyStepPaths = ToMoveDict2(numkeys);
-
-            // var day21a = new Day21a();
-
-            // result = 0;
-
-            // var code = "029A";
-
-            // var text0a = day21a.NumKeyPresser(code).First();
-            // print(text0a);
-
-            // var text0b = NumKeyPresser2(code).First();
-            // print(text0b);
-
-            // var tcs0a = text0a.ToTransitionCounts().Merge();
-            // tcs0a.Print("text0a");
-
-            // var tcs0b = text0b.ToTransitionCounts().Merge();
-            // tcs0b.Print("text0b");
-            // print("#---#---#---#---#---#---#---#---#---#---#---#---#");
-
-            // var text1a = day21a.DirKeyPresser([text0a]).First();
-            // print("text1a: " + text1a);
-            // var tcs1a = text1a.ToTransitionCounts().Merge();
-            // tcs1a.Print("text1a");
-            // var tcs1b = DirKeyPresser(tcs0b).ToList();
-            // tcs1b.Print("text1b");
-
-            // print("#---#---#---#---#---#---#---#---#---#---#---#---#");
-
-
-            // var text2a = day21a.DirKeyPresser([text1a]).First();
-            // print("text2a: " + text1a);
-            // var tcs2a = text2a.ToTransitionCounts().Merge();
-            // tcs2a.Print("text2a");
-            // var tcs2b = DirKeyPresser(tcs1b).ToList();
-            // tcs2b.Print("text2b");
-
-
-            var number_of_dirkey_pressers = 25;
-
-            foreach (var line in input)
+            var alts = GetNumKeyPaths(line);
+            var counts = new List<long>();
+            foreach (var alt in alts)
             {
-                var alts = NumKeyPresser2(line);
-                var counts = new List<long>();
-                foreach (var alt in alts)
+                var presser = NumKeyPresser(alt);
+                for (int i = 0; i < number_of_dirkey_pressers; i++)
                 {
-                    var presser = NumKeyPresser(alt);
-                    for (int i = 0; i < number_of_dirkey_pressers; i++)
-                    {
-                        presser = DirKeyPresser(presser);
-                    }
-                    var count = presser.Sum(x => x.Count);
-                    print(line + ": " + alt + "=" + count);
-                    counts.Add(count);
+                    presser = DirKeyPresser(presser);
                 }
-                var min = counts.Min();
-                var code_int = int.Parse(line[..3]);
-                print($"{min} * {code_int} = {min * code_int}");
-                result += min * code_int;
+                counts.Add(presser.Sum(x => x.Count));
             }
-
-            print(result);
+            var min = counts.Min();
+            var code_int = int.Parse(line[..3]);
+            print($"{min} * {code_int} = {min * code_int}");
+            result += min * code_int;
         }
-    }
 
-    private IEnumerable<string> ToSteps(string text)
-    {
-        var text2 = text;
-        if (text2.StartsWith("A") == false) text2 = "A" + text2;
-        if (text2.EndsWith("A") == false) text2 = text2 + "A";
-
-        return Enumerable
-            .Range(0, text2.Length - 1)
-            .Select(x => text2.Substring(x, 2));
+        print(result);
     }
 
     IEnumerable<TransitionCount> DirKeyPresser(IEnumerable<TransitionCount> inner)
     {
-        var outer = inner.SelectMany(tc => ToSteps(DirKeyStepPaths[tc.Transition]).Select(x => new TransitionCount(x, tc.Count)));
+        var outer = inner.SelectMany(tc => DirKeyStepPaths[tc.Transition].ToTransitions().Select(x => new TransitionCount(x, tc.Count)));
         var returns = outer.Merge();
         return returns;
     }
 
-    Dictionary<string, string> DirKeyStepPaths = [];
-    Dictionary<string, string[]> NumKeyStepPaths = [];
-
-    IEnumerable<string> NumKeyPresser2(string keys)
+    private IEnumerable<string> GetNumKeyPaths(string keys)
     {
-        IEnumerable<string> combos = ["A"];
-        foreach (var step in ToSteps(keys)) //.TrimEnd('A')))
+        IEnumerable<string> combos = [""];
+        foreach (var step in keys.ToTransitions()) //.TrimEnd('A')))
         {
             combos = combos.SelectMany(x => NumKeyStepPaths[step], (x, y) => x + y).ToList();
         }
         return combos.ToList();
     }
 
-    IEnumerable<TransitionCount> NumKeyPresser(string keys)
+    private static IEnumerable<TransitionCount> NumKeyPresser(string keys)
     {
-        return ToSteps(keys.Trim('A')).Select(x => new TransitionCount(x, 1)).Merge();
+        return keys.ToTransitions().Select(x => new TransitionCount(x, 1)).Merge();
     }
 
-    Dictionary<string, string> ToMoveDict(string text)
-    {
-        var dict = new Dictionary<string, string>();
-        foreach (var dir_key in text.Split(Environment.NewLine))
-        {
-            var key = dir_key.Substring(0, 2);
-            var value = dir_key.Substring(2);
-            dict[key] = value;
-            var rev_key = new string(key.Reverse().ToArray());
-            var rev_value = new string(value.Reverse().Select(Util.RotateClockwise).Select(Util.RotateClockwise).ToArray());
-            dict[rev_key] = rev_value;
-        }
-        return dict;
-    }
-
-    Dictionary<string, string[]> ToMoveDict2(string text)
+    private static Dictionary<string, string[]> ConstructTransitionOptionsDictionary(string text)
     {
         var dict = new Dictionary<string, string[]>();
         foreach (var dir_key in text.Split(Environment.NewLine))
@@ -143,7 +71,7 @@ public class Day21b : Day
         return dict;
     }
 
-    Dictionary<string, string> ToMoveDict3(string text)
+    private static Dictionary<string, string> ConstructTransitionDictionary(string text)
     {
         var dict = new Dictionary<string, string>();
         foreach (var dir_key in text.Split(Environment.NewLine))
@@ -159,7 +87,7 @@ public class Day21b : Day
         return dict;
     }
 
-    private string numkeys_simple =
+    public const string numkeys_simple =
     @"01^<
 02^
 03^>
@@ -216,7 +144,7 @@ public class Day21b : Day
 8A>vvv
 9Avvv";
 
-    private string numkeys =
+    public const string numkeys =
     @"01^<
 02^
 03^>,>^
@@ -273,7 +201,7 @@ public class Day21b : Day
 8A>vvv,v>vv,vv>v,vvv>
 9Avvv";
 
-    private string dirkeys =
+    private static string dirkeys =
     @"^A>
 ^<v<
 ^vv
@@ -285,7 +213,7 @@ A>v
 <>>>
 v>>";
 
-    private string dirkeys_all =
+    public const string dirkeys_all =
     @"^A>
 ^<v<
 ^vv
@@ -329,4 +257,14 @@ public static class XDay21Extensions
         return items.GroupBy(x => x.Transition).Select(x => new TransitionCount(x.Key, x.Sum(y => y.Count)));
     }
 
+    public static IEnumerable<string> ToTransitions(this string text)
+    {
+        var text2 = text;
+        if (text2.StartsWith("A") == false) text2 = "A" + text2;
+        if (text2.EndsWith("A") == false) text2 = text2 + "A";
+
+        return Enumerable
+            .Range(0, text2.Length - 1)
+            .Select(x => text2.Substring(x, 2));
+    }
 }
